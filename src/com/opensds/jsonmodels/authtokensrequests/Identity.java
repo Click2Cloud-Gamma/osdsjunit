@@ -1,4 +1,5 @@
-package com.opensds.jsonmodels.tokensrequests;
+package com.opensds.jsonmodels.authtokensrequests;
+
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -11,9 +12,9 @@ public class Identity {
     @SerializedName("methods")
     @Expose
     private List<String> methods = new ArrayList<>();
-    @SerializedName("password")
+    @SerializedName("token")
     @Expose
-    private Password password;
+    private Token token;
 
     public List<String> getMethods() {
         return methods;
@@ -23,16 +24,19 @@ public class Identity {
         this.methods = methods;
     }
 
-    public Password getPassword() {
-        return password;
+    public Token getToken() {
+        return token;
     }
 
-    public void setPassword(Password password) {
-        this.password = password;
+    public void setToken(Token token) {
+        this.token = token;
     }
 
     @Override
     public String toString() {
-        return new StringBuilder().append("methods").append(methods).append("password").append(password).toString();
+        return "Identity{" +
+                "methods=" + methods +
+                ", token=" + token +
+                '}';
     }
 }

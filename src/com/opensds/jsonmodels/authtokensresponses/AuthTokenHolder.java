@@ -1,15 +1,15 @@
-package com.opensds.jsonmodels.tokensresponses;
+package com.opensds.jsonmodels.authtokensresponses;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class TokenHolder {
+public class AuthTokenHolder {
 
     String responseHeaderSubjectToken;
 
     @SerializedName("token")
     @Expose
-    Token token;
+    private Token token;
 
     public Token getToken() {
         return token;
@@ -21,10 +21,10 @@ public class TokenHolder {
 
     @Override
     public String toString() {
-        return "\n\tTokenHolder{" +
-                "\n\t\ttoken=" + token +
-                "\n\treqHeaderToken=" + responseHeaderSubjectToken;
-
+        return "AuthTokenHolder{" +
+                "responseHeaderSubjectToken='" + responseHeaderSubjectToken + '\'' +
+                ", token=" + token +
+                '}';
     }
 
     public String getResponseHeaderSubjectToken() {

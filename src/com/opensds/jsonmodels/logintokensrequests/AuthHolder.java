@@ -1,4 +1,4 @@
-package com.opensds.jsonmodels.tokensrequests;
+package com.opensds.jsonmodels.logintokensrequests;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
