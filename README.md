@@ -5,24 +5,24 @@ For multi-cloud (mc), our test sequence is fairly similar for all tests, like be
 
 > Create bucket
 
-Call add backend API, it should return success
-Call the create bucket API on OSDS
-Check for success
-Now, call the list buckets API on OSDS
-Response should include the newly created bucket
-Declare success/failure
+1. Call add backend API, it should return success
+2. Call the create bucket API on OSDS
+3. Check for success
+4. Now, call the list buckets API on OSDS
+5. Response should include the newly created bucket
+6. Declare success/failure
 
 > Upload object
 
-Call add backend API, it should return success
-Call the create bucket API on OSDS
-Check for success
-Now, call Upload Object API on OSDS
-Check for success
-If success, check for the object in the cloud backend, using cloud backend API
-It should exist on the backend
-If 5 is success and 7 is success, declare success
-else declare failure
+1. Call add backend API, it should return success
+2. Call the create bucket API on OSDS
+3. Check for success
+4. Now, call Upload Object API on OSDS
+5. Check for success
+6. If success, check for the object in the cloud backend, using cloud backend API
+7. It should exist on the backend
+8. If 5 is success and 7 is success, declare success
+9. else declare failure
 
 
 ## Now, this framework will let us
