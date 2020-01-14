@@ -1,9 +1,9 @@
-#OpenSDS multicloud API test automation framework
+# OpenSDS multicloud API test automation framework
 
 This is a framework build in JAVA. It leverages JUNIT for running and reporting.
-For multi-cloud (mc), our test sequence is fairly similar for all tests, like below, with an example of create bucket and upload object
+For multi-cloud (mc), our test sequence is fairly similar for all tests, like below, with an example of create bucket and ## upload object
 
-Create bucket
+> Create bucket
 
 Call add backend API, it should return success
 Call the create bucket API on OSDS
@@ -12,7 +12,7 @@ Now, call the list buckets API on OSDS
 Response should include the newly created bucket
 Declare success/failure
 
-Upload object
+> Upload object
 
 Call add backend API, it should return success
 Call the create bucket API on OSDS
@@ -25,7 +25,7 @@ If 5 is success and 7 is success, declare success
 else declare failure
 
 
-Now, this framework will let us
+## Now, this framework will let us
 
 Use our mc AP as is to create test cases
 Use JSON/XML inputs and responses, convert them to POJO so results can be checked
