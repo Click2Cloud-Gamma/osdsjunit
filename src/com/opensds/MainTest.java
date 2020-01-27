@@ -45,7 +45,7 @@ class MainTest {
         // load input files for each type and create the backend
         for (Type t : getTypesHolder().getTypes()) {
             List<File> listOfIInputsForType =
-                    Utils.listFilesMatchingBeginsWithPatternInPath(t.getName(),
+                     Utils.listFilesMatchingBeginsWithPatternInPath(t.getName(),
                             "/root/javaproj/osdsjunit/inputs/addbackend");
             // add the backend specified in each file
             for (File file : listOfIInputsForType) {

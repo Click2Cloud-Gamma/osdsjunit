@@ -29,7 +29,7 @@ public class Utils {
         return retFileList;
     }
 
-    public static String readFileContentsAsString(File file) {
+    public static String  readFileContentsAsString(File file) {
         String content = null;
         try {
             content = new String(Files.readAllBytes(file.toPath()));

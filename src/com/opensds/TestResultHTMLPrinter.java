@@ -32,7 +32,7 @@ public class TestResultHTMLPrinter implements TestWatcher, AfterAllCallback {
                 append(TestResultStatus.SUCCESSFUL);
 
         GmailSender gmailSender = new GmailSender();
-        gmailSender.sendMail(result.toString());
+        //gmailSender.sendMail(result.toString());
     }
 
     @Override
