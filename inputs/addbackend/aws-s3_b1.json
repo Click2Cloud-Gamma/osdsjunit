@@ -1,5 +1,5 @@
 {
-  "name": "pcawsb1",
+  "name": "aws_backend1",
   "type": "aws-s3",
   "region": "ap-south-1",
   "endpoint": "s3.amazonaws.com",

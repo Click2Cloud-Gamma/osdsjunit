@@ -6,8 +6,10 @@ import com.opensds.jsonmodels.authtokensrequests.Project;
 import com.opensds.jsonmodels.authtokensrequests.Scope;
 import com.opensds.jsonmodels.authtokensrequests.Token;
 import com.opensds.jsonmodels.authtokensresponses.AuthTokenHolder;
+import com.opensds.jsonmodels.inputs.addbackend.AddBackendInputHolder;
 import com.opensds.jsonmodels.projectsresponses.ProjectsHolder;
 import com.opensds.jsonmodels.logintokensrequests.*;
+import com.opensds.jsonmodels.responses.listbackends.ListBackendResponse;
 import com.opensds.jsonmodels.tokensresponses.TokenHolder;
 import com.opensds.jsonmodels.typesresponse.TypesHolder;
 import okhttp3.*;
@@ -45,14 +47,14 @@ public class HttpHandler {
                     MediaType.parse("application/json; charset=utf-8")
             );
             Request request = new Request.Builder()
-                    .url("http://192.168.2.9:8088/v3/auth/tokens")
+                    .url("http://" + System.getenv("HOST_IP") + ":8088/v3/auth/tokens")
                     .post(body)
                     .addHeader("Content-Type", "application/json")
                     .addHeader("User-Agent", "PostmanRuntime/7.20.1")
                     .addHeader("Accept", "*/*")
                     .addHeader("Cache-Control", "no-cache")
                     .addHeader("Postman-Token", "d1461223-255f-4c72-a3bf-b7410ca5c387,e78d906f-6ffc-4cd0-a51b-3237edf146fa")
-                    .addHeader("Host", "192.168.2.9:8088")
+                    .addHeader("Host", System.getenv("HOST_IP") + ":8088")
                     .addHeader("Accept-Encoding", "gzip, deflate")
                     .addHeader("Content-Length", "274")
                     .addHeader("Connection", "keep-alive")
@@ -90,7 +92,7 @@ public class HttpHandler {
 
             Gson gson = new Gson();
 
-            String url = "http://192.168.2.9:8088/v3/users/<userid>/projects";
+            String url = "http://" + System.getenv("HOST_IP") + ":8088/v3/users/<userid>/projects";
             url = url.replaceAll("<userid>", userId);
 
             Request request = new Request.Builder()
@@ -99,7 +101,7 @@ public class HttpHandler {
                     .addHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36")
                     .addHeader("Accept", "*/*")
                     .addHeader("Cache-Control", "no-cache")
-                    .addHeader("Host", "192.168.2.9:8088")
+                    .addHeader("Host", System.getenv("HOST_IP") + ":8088")
                     .addHeader("Accept-Encoding", "gzip, deflate")
                     .addHeader("Connection", "keep-alive")
                     .addHeader("cache-control", "no-cache")
@@ -145,14 +147,14 @@ public class HttpHandler {
                     MediaType.parse("application/json; charset=utf-8")
             );
             Request request = new Request.Builder()
-                    .url("http://192.168.2.9:8088/v3/auth/tokens")
+                    .url("http://" + System.getenv("HOST_IP") + ":8088/v3/auth/tokens")
                     .post(body)
                     .addHeader("Content-Type", "application/json")
                     .addHeader("User-Agent", "PostmanRuntime/7.20.1")
                     .addHeader("Accept", "*/*")
                     .addHeader("Cache-Control", "no-cache")
                     .addHeader("Postman-Token", "d1461223-255f-4c72-a3bf-b7410ca5c387,e78d906f-6ffc-4cd0-a51b-3237edf146fa")
-                    .addHeader("Host", "192.168.2.9:8088")
+                    .addHeader("Host", System.getenv("HOST_IP") + ":8088")
                     .addHeader("Accept-Encoding", "gzip, deflate")
                     .addHeader("Content-Length", "274")
                     .addHeader("Connection", "keep-alive")
@@ -188,7 +190,7 @@ public class HttpHandler {
 
             Gson gson = new Gson();
 
-            String url = "http://192.168.2.9:8088/v1/<projectid>/types";
+            String url = "http://" + System.getenv("HOST_IP") + ":8088/v1/<projectid>/types";
 
             url = url.replaceAll("<projectid>", projId);
 
@@ -198,7 +200,7 @@ public class HttpHandler {
                     .addHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36")
                     .addHeader("Accept", "*/*")
                     .addHeader("Cache-Control", "no-cache")
-                    .addHeader("Host", "192.168.2.9:8088")
+                    .addHeader("Host", System.getenv("HOST_IP") + ":8088")
                     .addHeader("Accept-Encoding", "gzip, deflate")
                     .addHeader("Connection", "keep-alive")
                     .addHeader("cache-control", "no-cache")
@@ -221,19 +223,19 @@ public class HttpHandler {
     }
 
 
-    public int addBackend(String x_auth_token, String projId) {
+    public int addBackend(String x_auth_token, String projId, AddBackendInputHolder inputHolder) {
 
-        int code=-1;
+        int code = -1;
         try {
             MediaType mediaType = MediaType.parse("application/json");
             AddBackendRequestPayload addBackendRequestPayload = new AddBackendRequestPayload();
-            addBackendRequestPayload.setName("pcaws6387368376");
-            addBackendRequestPayload.setType("aws-s3");
-            addBackendRequestPayload.setRegion("ap-south-1");
-            addBackendRequestPayload.setEndpoint("s3.amazonaws.com");
-            addBackendRequestPayload.setBucketName("opensds-him");
-            addBackendRequestPayload.setSecurity("Gwjz9MKAbt31414yFMMCOen9h7I9LaJhxa/fYuEY");
-            addBackendRequestPayload.setAccess("AKIAJSHWLJXYBWTNDL7Q");
+            addBackendRequestPayload.setName(inputHolder.getName());
+            addBackendRequestPayload.setType(inputHolder.getType());
+            addBackendRequestPayload.setRegion(inputHolder.getRegion());
+            addBackendRequestPayload.setEndpoint(inputHolder.getEndpoint());
+            addBackendRequestPayload.setBucketName(inputHolder.getBucketName());
+            addBackendRequestPayload.setSecurity(inputHolder.getSecurity());
+            addBackendRequestPayload.setAccess(inputHolder.getAccess());
 
             Gson gson = new Gson();
             RequestBody body = RequestBody.create(
@@ -241,7 +243,7 @@ public class HttpHandler {
                     MediaType.parse("application/json; charset=utf-8")
             );
 
-            String url = "http://192.168.2.9:8088/v1/<projectid>/backends";
+            String url = "http://" + System.getenv("HOST_IP") + ":8088/v1/<projectid>/backends";
             url = url.replaceAll("<projectid>", projId);
 
             Request request = new Request.Builder()
@@ -252,7 +254,7 @@ public class HttpHandler {
                     .addHeader("Accept", "*/*")
                     .addHeader("Cache-Control", "no-cache")
                     .addHeader("Postman-Token", "d1461223-255f-4c72-a3bf-b7410ca5c387,e78d906f-6ffc-4cd0-a51b-3237edf146fa")
-                    .addHeader("Host", "192.168.2.9:8088")
+                    .addHeader("Host", System.getenv("HOST_IP") + ":8088")
                     .addHeader("Accept-Encoding", "gzip, deflate")
                     .addHeader("Content-Length", "274")
                     .addHeader("Connection", "keep-alive")
@@ -269,5 +271,76 @@ public class HttpHandler {
             e.printStackTrace();
         }
         return code;
+    }
+
+    public Response getBackends(String x_auth_token, String projId) {
+
+        Response response = null;
+
+        ListBackendResponse lbr = new ListBackendResponse();
+        try {
+            MediaType mediaType = MediaType.parse("application/json");
+
+            String url = "http://" + System.getenv("HOST_IP") + ":8088/v1/<projectid>/backends";
+            url = url.replaceAll("<projectid>", projId);
+
+            Request request = new Request.Builder()
+                    .url(url)
+                    .get()
+                    .addHeader("Content-Type", "application/json")
+                    .addHeader("User-Agent", "PostmanRuntime/7.20.1")
+                    .addHeader("Accept", "*/*")
+                    .addHeader("Cache-Control", "no-cache")
+                    .addHeader("Host", System.getenv("HOST_IP") + ":8088")
+                    .addHeader("Accept-Encoding", "gzip, deflate")
+                    .addHeader("Connection", "keep-alive")
+                    .addHeader("cache-control", "no-cache")
+                    .addHeader("X-Auth-Token", x_auth_token)
+                    .build();
+
+
+            response = client.newCall(request).execute();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return response;
+    }
+
+
+    public Response deleteBackend(String x_auth_token, String projId, String backendId) {
+
+        Response response = null;
+
+        ListBackendResponse lbr = new ListBackendResponse();
+        try {
+            MediaType mediaType = MediaType.parse("application/json");
+
+            String url = "http://" + System.getenv("HOST_IP") + ":8088/v1/<projectid>/backends/" + backendId;
+            url = url.replaceAll("<projectid>", projId);
+
+            Request request = new Request.Builder()
+                    .url(url)
+                    .delete()
+                    .addHeader("Content-Type", "application/json")
+                    .addHeader("User-Agent", "PostmanRuntime/7.20.1")
+                    .addHeader("Accept", "*/*")
+                    .addHeader("Cache-Control", "no-cache")
+                    .addHeader("Host", System.getenv("HOST_IP") + ":8088")
+                    .addHeader("Accept-Encoding", "gzip, deflate")
+                    .addHeader("Connection", "keep-alive")
+                    .addHeader("cache-control", "no-cache")
+                    .addHeader("X-Auth-Token", x_auth_token)
+                    .build();
+
+
+            response = client.newCall(request).execute();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return response;
     }
 }

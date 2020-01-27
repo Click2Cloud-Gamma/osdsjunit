@@ -29,7 +29,9 @@ public class Main {
         TypesHolder typesHolder = httpHandler.getTypes(authTokenHolder.getResponseHeaderSubjectToken(), authTokenHolder.getToken().getProject().getId());
 
 
-        int code = httpHandler.addBackend(authTokenHolder.getResponseHeaderSubjectToken(), authTokenHolder.getToken().getProject().getId());
+        /*int code = httpHandler.addBackend(authTokenHolder.getResponseHeaderSubjectToken(),
+                authTokenHolder.getToken().getProject().getId(),
+                );*/
         //System.out.println(code);
 
 
