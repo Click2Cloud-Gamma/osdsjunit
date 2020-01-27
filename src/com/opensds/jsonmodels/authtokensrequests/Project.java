@@ -1,9 +1,9 @@
-package com.opensds.jsonmodels.tokensrequests;
+package com.opensds.jsonmodels.authtokensrequests;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class User {
+public class Project {
 
     @SerializedName("name")
     @Expose
@@ -11,9 +11,6 @@ public class User {
     @SerializedName("domain")
     @Expose
     private Domain domain;
-    @SerializedName("password")
-    @Expose
-    private String password;
 
     public String getName() {
         return name;
@@ -31,17 +28,11 @@ public class User {
         this.domain = domain;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     @Override
     public String toString() {
-        return new StringBuilder().append("name").append(name).append("domain").append(domain).append("password").append(password).toString();
+        return "Project{" +
+                "name='" + name + '\'' +
+                ", domain=" + domain +
+                '}';
     }
-
 }
