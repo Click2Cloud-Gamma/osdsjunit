@@ -1,5 +1,6 @@
 package com.opensds;
 
+import com.opensds.jsonmodels.inputs.createbucket.CreateBucketFileInput;
 import com.opensds.jsonmodels.projectsresponses.ProjectsHolder;
 import com.opensds.jsonmodels.tokensresponses.TokenHolder;
 import com.opensds.jsonmodels.typesresponse.TypesHolder;
@@ -9,7 +10,11 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class Main {
 
@@ -24,7 +29,7 @@ public class Main {
         ProjectsHolder projectsHolder = httpHandler.getProjects(tokenHolder.getResponseHeaderSubjectToken(), tokenHolder.getToken().getUser().getId());
 
 
-        com.opensds.jsonmodels.authtokensresponses.AuthTokenHolder  authTokenHolder = httpHandler.getAuthToken(tokenHolder.getResponseHeaderSubjectToken());
+        com.opensds.jsonmodels.authtokensresponses.AuthTokenHolder authTokenHolder = httpHandler.getAuthToken(tokenHolder.getResponseHeaderSubjectToken());
 
         TypesHolder typesHolder = httpHandler.getTypes(authTokenHolder.getResponseHeaderSubjectToken(), authTokenHolder.getToken().getProject().getId());
 
@@ -55,4 +60,6 @@ public class Main {
             e.printStackTrace();
         }
     }*/
+
+
 }

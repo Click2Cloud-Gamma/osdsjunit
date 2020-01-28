@@ -1,12 +1,12 @@
 package com.opensds;
 
 import com.google.gson.Gson;
-import com.opensds.jsonmodels.addbackendrequests.AddBackendRequestPayload;
 import com.opensds.jsonmodels.authtokensrequests.Project;
 import com.opensds.jsonmodels.authtokensrequests.Scope;
 import com.opensds.jsonmodels.authtokensrequests.Token;
 import com.opensds.jsonmodels.authtokensresponses.AuthTokenHolder;
 import com.opensds.jsonmodels.inputs.addbackend.AddBackendInputHolder;
+import com.opensds.jsonmodels.inputs.createbucket.CreateBucketFileInput;
 import com.opensds.jsonmodels.projectsresponses.ProjectsHolder;
 import com.opensds.jsonmodels.logintokensrequests.*;
 import com.opensds.jsonmodels.responses.listbackends.ListBackendResponse;
@@ -228,18 +228,10 @@ public class HttpHandler {
         int code = -1;
         try {
             MediaType mediaType = MediaType.parse("application/json");
-            AddBackendRequestPayload addBackendRequestPayload = new AddBackendRequestPayload();
-            addBackendRequestPayload.setName(inputHolder.getName());
-            addBackendRequestPayload.setType(inputHolder.getType());
-            addBackendRequestPayload.setRegion(inputHolder.getRegion());
-            addBackendRequestPayload.setEndpoint(inputHolder.getEndpoint());
-            addBackendRequestPayload.setBucketName(inputHolder.getBucketName());
-            addBackendRequestPayload.setSecurity(inputHolder.getSecurity());
-            addBackendRequestPayload.setAccess(inputHolder.getAccess());
 
             Gson gson = new Gson();
             RequestBody body = RequestBody.create(
-                    gson.toJson(addBackendRequestPayload),
+                    gson.toJson(inputHolder),
                     MediaType.parse("application/json; charset=utf-8")
             );
 
@@ -342,5 +334,46 @@ public class HttpHandler {
         }
 
         return response;
+    }
+
+
+    public int createBucket(String x_auth_token, CreateBucketFileInput input, String bucketName) {
+
+        int code = -1;
+        try {
+            MediaType mediaType = MediaType.parse("application/json");
+
+            Gson gson = new Gson();
+            RequestBody body = RequestBody.create(
+                    input.getXmlPayload(),
+                    MediaType.parse("application/xml; charset=utf-8")
+            );
+            // http://localhost:8088/v1/s3/b123
+            String url = "http://" + System.getenv("HOST_IP") + ":8088/v1/s3/" + bucketName;
+
+            Request request = new Request.Builder()
+                    .url(url)
+                    .post(body)
+                    .addHeader("Content-Type", "application/xml")
+                    .addHeader("User-Agent", "PostmanRuntime/7.20.1")
+                    .addHeader("Accept", "*/*")
+                    .addHeader("Cache-Control", "no-cache")
+                    .addHeader("Postman-Token", "d1461223-255f-4c72-a3bf-b7410ca5c387,e78d906f-6ffc-4cd0-a51b-3237edf146fa")
+                    .addHeader("Host", System.getenv("HOST_IP") + ":8088")
+                    .addHeader("Accept-Encoding", "gzip, deflate")
+                    .addHeader("Content-Length", "204")
+                    .addHeader("Connection", "keep-alive")
+                    .addHeader("cache-control", "no-cache")
+                    .addHeader("Connection", "keep-alive")
+                    .addHeader("X-Auth-Token", x_auth_token)
+                    .build();
+
+            Response response = client.newCall(request).execute();
+            code = response.code();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return code;
     }
 }
