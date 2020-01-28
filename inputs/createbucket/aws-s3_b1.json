@@ -1,0 +1,9 @@
+{
+  "name": "pc_aws_backend",
+  "type": "aws-s3",
+  "region": "ap-south-1",
+  "endpoint": "s3.amazonaws.com",
+  "bucketName": "rhsakarpfromosdsaws",
+  "security": "GzGA8008uqayqgrDnjybm3fgy4xcjobbF/349FtL",
+  "access": "AKIAIMR6AULEJMKRQLVA"
+}
