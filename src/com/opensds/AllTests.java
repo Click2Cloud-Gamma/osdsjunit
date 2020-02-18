@@ -1,6 +1,7 @@
 package com.opensds;
 
 import com.google.gson.Gson;
+import com.opensds.jsonmodels.akskresponses.SignatureKey;
 import com.opensds.jsonmodels.authtokensresponses.AuthTokenHolder;
 import com.opensds.jsonmodels.inputs.addbackend.AddBackendInputHolder;
 import com.opensds.jsonmodels.inputs.createbucket.CreateBucketFileInput;
@@ -83,6 +84,8 @@ class AllTests {
                 List<File> listOfIBucketInputs =
                         Utils.listFilesMatchingBeginsWithPatternInPath("bucket",
                                 "/root/javaproj/osdsjunit/inputs/createbucket");
+                /*SignatureKey signatureKey = getHttpHandler().getAkSkList(getAuthTokenHolder().getResponseHeaderSubjectToken(),
+                        getAuthTokenHolder().getToken().getProject().getId());*/
                 // create the bucket specified in each file
                 for (File bucketFile : listOfIBucketInputs) {
                     String bucketContent = Utils.readFileContentsAsString(bucketFile);
@@ -96,9 +99,9 @@ class AllTests {
 
                     // now create buckets
                     int cbCode = getHttpHandler().createBucket(getAuthTokenHolder().getResponseHeaderSubjectToken(),
-                            bfi, bName);
+                            bfi, bName, null);//signatureKey);
+                    System.out.println(cbCode);
                     assertEquals(cbCode, 200);
-
 
                 }
 

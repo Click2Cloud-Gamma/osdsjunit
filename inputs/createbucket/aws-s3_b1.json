@@ -1,9 +1,9 @@
 {
-  "name": "pc_aws_backend",
+  "name": "him_aws_backend",
   "type": "aws-s3",
   "region": "ap-south-1",
   "endpoint": "s3.amazonaws.com",
-  "bucketName": "rhsakarpfromosdsaws",
-  "security": "GzGA8008uqayqgrDnjybm3fgy4xcjobbF/349FtL",
-  "access": "AKIAIMR6AULEJMKRQLVA"
+  "bucketName": "opensds-him",
+  "security": "Gwjz9MKAbt31414yFMMCOen9h7I9LaJhxa/fYuEY",
+  "access": "AKIAJSHWLJXYBWTNDL7Q"
 }
