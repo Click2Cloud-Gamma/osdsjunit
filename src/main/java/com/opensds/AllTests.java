@@ -99,7 +99,7 @@ class AllTests {
 
                     // now create buckets
                     int cbCode = getHttpHandler().createBucket(getAuthTokenHolder().getResponseHeaderSubjectToken(),
-                            bfi, bName, null);//signatureKey);
+                            bfi, bName, null, getAuthTokenHolder().getToken().getProject().getId());//signatureKey);
                     System.out.println(cbCode);
                     assertEquals(cbCode, 200);
 

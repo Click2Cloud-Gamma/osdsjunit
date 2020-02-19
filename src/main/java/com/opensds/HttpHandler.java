@@ -1,6 +1,5 @@
 package com.opensds;
 
-import com.amazonaws.services.s3.sample.auth.AWS4SignerForAuthorizationHeader;
 import com.google.common.base.Splitter;
 import com.google.gson.Gson;
 import com.opensds.jsonmodels.akskresponses.AKSKHolder;
@@ -17,21 +16,28 @@ import com.opensds.jsonmodels.responses.listbackends.ListBackendResponse;
 import com.opensds.jsonmodels.tokensresponses.TokenHolder;
 import com.opensds.jsonmodels.typesresponse.TypesHolder;
 import okhttp3.*;
-import org.apache.commons.codec.binary.Hex;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
+import javax.xml.bind.JAXBContext;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class HttpHandler {
 
@@ -280,8 +286,8 @@ public class HttpHandler {
 
             Gson gson = new Gson();
             RequestBody body = RequestBody.create(
-                    gson.toJson(authHolder),
-                    MediaType.parse("application/json; charset=utf-8")
+                    MediaType.parse("application/json; charset=utf-8"),
+                    gson.toJson(authHolder)
             );
             Request request = new Request.Builder()
                     .url("http://" + System.getenv("HOST_IP") + ":8088/v3/auth/tokens")
@@ -380,8 +386,8 @@ public class HttpHandler {
 
             Gson gson = new Gson();
             RequestBody body = RequestBody.create(
-                    gson.toJson(authHolder),
-                    MediaType.parse("application/json; charset=utf-8")
+                    MediaType.parse("application/json; charset=utf-8"),
+                    gson.toJson(authHolder)
             );
             Request request = new Request.Builder()
                     .url("http://" + System.getenv("HOST_IP") + ":8088/v3/auth/tokens")
@@ -468,8 +474,8 @@ public class HttpHandler {
 
             Gson gson = new Gson();
             RequestBody body = RequestBody.create(
-                    gson.toJson(inputHolder),
-                    MediaType.parse("application/json; charset=utf-8")
+                    MediaType.parse("application/json; charset=utf-8"),
+                    gson.toJson(inputHolder)
             );
 
             String url = "http://" + System.getenv("HOST_IP") + ":8088/v1/<projectid>/backends";
@@ -574,7 +580,8 @@ public class HttpHandler {
     }
 
 
-    public int createBucket(String x_auth_token, CreateBucketFileInput input, String bucketName, SignatureKey signatureKey) {
+    public int createBucket(String x_auth_token, CreateBucketFileInput input, String bucketName,
+                            SignatureKey signatureKey, String projId) {
 
         int code = -1;
         try {
@@ -582,8 +589,8 @@ public class HttpHandler {
 
             Gson gson = new Gson();
             RequestBody body = RequestBody.create(
-                    input.getXmlPayload(),
-                    MediaType.parse("application/xml; charset=utf-8")
+                    MediaType.parse("application/xml; charset=utf-8"),
+                    input.getXmlPayload()
             );
 
 
@@ -637,9 +644,111 @@ public class HttpHandler {
             code = response.code();
             System.out.println(response.body().string());
 
+            Response listBucketResponse = getBuckets(x_auth_token, projId);
+            boolean bucketFound = doesListBucketResponseContainBucketByName(listBucketResponse.body().string(), bucketName);
+            assertTrue(bucketFound);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
         return code;
+    }
+
+
+    public Response getBuckets(String x_auth_token, String projId) {
+
+        Response response = null;
+
+        ListBackendResponse lbr = new ListBackendResponse();
+        try {
+            MediaType mediaType = MediaType.parse("application/json");
+
+            //http://localhost:8088/v1/s3
+            String url = "http://" + System.getenv("HOST_IP") + ":8088/v1/s3";
+
+            Request request = new Request.Builder()
+                    .url(url)
+                    .get()
+                    .addHeader("User-Agent", "PostmanRuntime/7.20.1")
+                    .addHeader("Accept", "*/*")
+                    .addHeader("Cache-Control", "no-cache")
+                    .addHeader("Host", System.getenv("HOST_IP") + ":8088")
+                    .addHeader("Accept-Encoding", "gzip, deflate")
+                    .addHeader("Connection", "keep-alive")
+                    .addHeader("cache-control", "no-cache")
+                    .addHeader("X-Auth-Token", x_auth_token)
+                    .build();
+
+
+            response = client.newCall(request).execute();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return response;
+    }
+
+    private boolean doesListBucketResponseContainBucketByName(String xmlResponse, String bucketName) {
+
+        JAXBContext context = null;
+        boolean found = false;
+        try {
+            // sample response
+            /*
+                    "<ListAllMyBucketsResult xmlns=\"abcd\">" +
+                    "  <Owner>" +
+                    "    <ID></ID>" +
+                    "    <DisplayName></DisplayName>" +
+                    "  </Owner>" +
+                    "  <Buckets>" +
+                    "    <Name>b123</Name>" +
+                    "    <CreateTime>2020-02-18T13:30:03+05:30</CreateTime>" +
+                    "    <LocationConstraint>him_aws_backend</LocationConstraint>" +
+                    "    <VersioningConfiguration>" +
+                    "      <Status>Disabled</Status>" +
+                    "    </VersioningConfiguration>" +
+                    "    <SSEConfiguration>" +
+                    "      <SSE>" +
+                    "        <enabled>false</enabled>" +
+                    "      </SSE>" +
+                    "      <SSE-KMS>" +
+                    "        <enabled></enabled>" +
+                    "        <DefaultKMSMasterKey></DefaultKMSMasterKey>" +
+                    "      </SSE-KMS>" +
+                    "    </SSEConfiguration>" +
+                    "  </Buckets>" +
+                    "</ListAllMyBucketsResult>"
+             */
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(new InputSource(new StringReader(xmlResponse)) {
+            });
+
+            System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
+
+            NodeList buckets = doc.getElementsByTagName("Buckets");
+            System.out.println(buckets.getLength());
+
+            int numBuckets = buckets.getLength();
+
+            for (int i = 0; i < numBuckets; i++) {
+                Element bucket = (Element) buckets.item(i);
+                String bName = bucket.getElementsByTagName("Name").item(0).getTextContent();
+                System.out.println(bName);
+                if (bucketName.equals(bName)) {
+                    found = true;
+                    break;
+                }
+            }
+
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return found;
     }
 }

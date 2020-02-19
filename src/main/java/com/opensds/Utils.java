@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Utils {
-    public static List<File> listFilesMatchingBeginsWithPatternInPath(String beginPattern, String path) {
+    public static List<File> listFilesMatchingBeginsWithPatternInPath(final String beginPattern, String path) {
         List<File> retFileList = new ArrayList<>();
         try {
             File dir = new File(path);
