@@ -27,7 +27,7 @@ For multi-cloud (mc), our test sequence is fairly similar for all tests, like be
 
 ## Now, this framework will let us
 
-- Use our mc AP as is to create test cases
+- Use our multicloud API as is to create test cases
 - Use JSON/XML inputs and responses, convert them to POJO so results can be checked
 - Read test inputs from .json files, run the same test case many times with different data
 - Generate basic HTML reports and Google sheets reports to persist
