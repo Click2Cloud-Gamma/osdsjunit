@@ -37,7 +37,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class HttpHandler {
 
@@ -720,25 +720,27 @@ public class HttpHandler {
                     "  </Buckets>" +
                     "</ListAllMyBucketsResult>"
              */
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(new InputSource(new StringReader(xmlResponse)) {
-            });
+            if (!xmlResponse.isEmpty()) {
+                DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+                Document doc = dBuilder.parse(new InputSource(new StringReader(xmlResponse)) {
+                });
 
-            System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
+                System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
 
-            NodeList buckets = doc.getElementsByTagName("Buckets");
-            System.out.println(buckets.getLength());
+                NodeList buckets = doc.getElementsByTagName("Buckets");
+                System.out.println(buckets.getLength());
 
-            int numBuckets = buckets.getLength();
+                int numBuckets = buckets.getLength();
 
-            for (int i = 0; i < numBuckets; i++) {
-                Element bucket = (Element) buckets.item(i);
-                String bName = bucket.getElementsByTagName("Name").item(0).getTextContent();
-                System.out.println(bName);
-                if (bucketName.equals(bName)) {
-                    found = true;
-                    break;
+                for (int i = 0; i < numBuckets; i++) {
+                    Element bucket = (Element) buckets.item(i);
+                    String bName = bucket.getElementsByTagName("Name").item(0).getTextContent();
+                    System.out.println(bName);
+                    if (bucketName.equals(bName)) {
+                        found = true;
+                        break;
+                    }
                 }
             }
 
@@ -750,5 +752,49 @@ public class HttpHandler {
             e.printStackTrace();
         }
         return found;
+    }
+
+
+    public int deleteBucket(String x_auth_token, String projId, String bucketName) {
+
+        Response response = null;
+        int code = -1;
+
+        ListBackendResponse lbr = new ListBackendResponse();
+        try {
+            MediaType mediaType = MediaType.parse("application/json");
+
+            String url = "http://" + System.getenv("HOST_IP") + ":8088/v1/s3/" + bucketName;
+            //url = url.replaceAll("<projectid>", projId);
+
+            Request request = new Request.Builder()
+                    .url(url)
+                    .delete()
+                    //.addHeader("Content-Type", "application/json")
+                    .addHeader("User-Agent", "PostmanRuntime/7.20.1")
+                    .addHeader("Accept", "*/*")
+                    .addHeader("Cache-Control", "no-cache")
+                    .addHeader("Host", System.getenv("HOST_IP") + ":8088")
+                    .addHeader("Accept-Encoding", "gzip, deflate")
+                    .addHeader("Connection", "keep-alive")
+                    .addHeader("cache-control", "no-cache")
+                    .addHeader("X-Auth-Token", x_auth_token)
+                    .build();
+
+
+            response = client.newCall(request).execute();
+
+            code = response.code();
+            assertEquals(code, 200);
+
+            Response listBucketResponse = getBuckets(x_auth_token, projId);
+            boolean bucketFound = doesListBucketResponseContainBucketByName(listBucketResponse.body().string(), bucketName);
+            assertFalse(bucketFound);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return code;
     }
 }

@@ -102,9 +102,7 @@ class AllTests {
                             bfi, bName, null, getAuthTokenHolder().getToken().getProject().getId());//signatureKey);
                     System.out.println(cbCode);
                     assertEquals(cbCode, 200);
-
                 }
-
             }
         }
 
@@ -155,6 +153,61 @@ class AllTests {
                     e.printStackTrace();
                 }
 
+            }
+        }
+
+    }
+
+
+    @Test
+    @DisplayName("Create a bucket, then test delete bucket")
+    public void testDeleteBucketForAllTypes() {
+        // load input files for each type and create the backend
+        for (Type t : getTypesHolder().getTypes()) {
+            List<File> listOfIInputsForType =
+                    Utils.listFilesMatchingBeginsWithPatternInPath(t.getName(),
+                            "/root/javaproj/osdsjunit/inputs/createbucket");
+            Gson gson = new Gson();
+            // add the backend specified in each file
+            for (File file : listOfIInputsForType) {
+                String content = Utils.readFileContentsAsString(file);
+                assertNotNull(content);
+
+                AddBackendInputHolder inputHolder = gson.fromJson(content, AddBackendInputHolder.class);
+                int code = getHttpHandler().addBackend(getAuthTokenHolder().getResponseHeaderSubjectToken(),
+                        getAuthTokenHolder().getToken().getProject().getId(),
+                        inputHolder);
+                assertEquals(code, 200);
+
+                // backend added, now create buckets
+                List<File> listOfIBucketInputs =
+                        Utils.listFilesMatchingBeginsWithPatternInPath("bucket",
+                                "/root/javaproj/osdsjunit/inputs/deletebucket");
+                /*SignatureKey signatureKey = getHttpHandler().getAkSkList(getAuthTokenHolder().getResponseHeaderSubjectToken(),
+                        getAuthTokenHolder().getToken().getProject().getId());*/
+                // create the bucket specified in each file
+                for (File bucketFile : listOfIBucketInputs) {
+                    String bucketContent = Utils.readFileContentsAsString(bucketFile);
+                    assertNotNull(bucketContent);
+
+                    CreateBucketFileInput bfi = gson.fromJson(bucketContent, CreateBucketFileInput.class);
+
+                    // filename format is "bucket_<bucketname>.json", get the bucket name here
+                    String bName = bucketFile.getName().substring(bucketFile.getName().indexOf("_") + 1,
+                            bucketFile.getName().indexOf("."));
+
+                    // now create buckets
+                    int cbCode = getHttpHandler().createBucket(getAuthTokenHolder().getResponseHeaderSubjectToken(),
+                            bfi, bName, null, getAuthTokenHolder().getToken().getProject().getId());//signatureKey);
+                    System.out.println(cbCode);
+                    assertEquals(cbCode, 200);
+
+                    // now delete the bucket
+                    int dbCode = getHttpHandler().deleteBucket(getAuthTokenHolder().getResponseHeaderSubjectToken(),
+                            getAuthTokenHolder().getToken().getProject().getId(), bName);//signatureKey);
+                    System.out.println(cbCode);
+                    assertEquals(cbCode, 200);
+                }
             }
         }
 
